@@ -15,12 +15,18 @@ namespace ProjectsAndNotesAPI.Repositories.ProjectRepository
 
         public async Task<IEnumerable<Project>> GetAllProjectsAsync()
         {
-            return await _dbContext.Projects.ToListAsync();
+            return await _dbContext.Projects
+                .Include(p => p.Assignments)
+                .Include(p => p.ProjectManager)
+                .ToListAsync();
         }
 
         public async Task<Project> GetProjectByIdAsync(int id)
         {
-            return await _dbContext.Projects.FirstOrDefaultAsync(p => p.Id == id);
+            return await _dbContext.Projects
+                .Include(p => p.Assignments)
+                .Include(p => p.ProjectManager)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<Project> AddProjectAsync(Project project)
@@ -54,11 +60,13 @@ namespace ProjectsAndNotesAPI.Repositories.ProjectRepository
         {
             var project = await GetProjectByIdAsync(id);
 
-            if (project != null)
+            if (project == null)
             {
-                _dbContext.Projects.Remove(project);
-                await _dbContext.SaveChangesAsync();
+                return;
             }
+
+            _dbContext.Projects.Remove(project);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

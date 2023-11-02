@@ -11,10 +11,16 @@ namespace ProjectsAndNotesAPI.Data
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Project>()
+                .HasMany(p => p.Assignments)
+                .WithOne(a => a.Project)
+                .HasForeignKey(a => a.ProjectId);
+
             modelBuilder.Entity<Project>()
                 .HasOne(p => p.ProjectManager)
                 .WithOne(pm => pm.Project)

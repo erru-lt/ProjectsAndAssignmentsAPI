@@ -1,5 +1,6 @@
 ﻿using ProjectsAndNotesAPI.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ProjectsAndNotesAPI.Models
 {
@@ -16,6 +17,7 @@ namespace ProjectsAndNotesAPI.Models
         [Required]
         public AssignmentState Status { get; set; }
         public int ProjectId { get; set; }
+        [JsonIgnore]
         public Project? Project { get; set; }
     }
 }

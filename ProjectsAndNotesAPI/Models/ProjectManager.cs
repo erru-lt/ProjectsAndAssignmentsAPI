@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ProjectsAndNotesAPI.Models
 {
@@ -14,6 +15,7 @@ namespace ProjectsAndNotesAPI.Models
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
         public int ProjectId { get; set; }
+        [JsonIgnore]
         public Project? Project { get; set; }
     }
 }

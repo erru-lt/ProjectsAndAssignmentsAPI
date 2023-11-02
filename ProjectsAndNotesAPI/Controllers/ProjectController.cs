@@ -16,14 +16,17 @@ namespace ProjectsAndNotesAPI.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<Project>> AddNewProjectAsync([FromBody] Project project)
         {
+            if (project == null)
+            {
+                return BadRequest();
+            }
+            
             try
             {
-                if (project == null)
-                {
-                    return BadRequest();
-                }
 
                 var createdProject = await _projectRepository.AddProjectAsync(project);
 
@@ -38,6 +41,7 @@ namespace ProjectsAndNotesAPI.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Project>>> GetAllProjectsAsync()
         {
             var allProjects = await _projectRepository.GetAllProjectsAsync();
@@ -45,6 +49,7 @@ namespace ProjectsAndNotesAPI.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Project>> GetProjectById(int id)
         {
             var project = await _projectRepository.GetProjectByIdAsync(id);
@@ -52,11 +57,13 @@ namespace ProjectsAndNotesAPI.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Project>> UpdateProjectAsync(int id, Project project)
         {
             if (id != project.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             await _projectRepository.UpdateProjectAsync(project);
@@ -64,6 +71,7 @@ namespace ProjectsAndNotesAPI.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Project>> DeleteProjectAsync(int id)
         {
             await _projectRepository.DeleteProjectAsync(id);

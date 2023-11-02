@@ -10,8 +10,9 @@ namespace ProjectsAndNotesAPI.Data
         {
             using (var dbContext = new AppDbContext(serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>()))
             {
-                dbContext.Database.EnsureDeleted();
+                //dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
+                //await dbContext.Database.MigrateAsync();
 
                 if (dbContext.Projects.Any() == false)
                 {
@@ -19,18 +20,20 @@ namespace ProjectsAndNotesAPI.Data
                     await dbContext.SaveChangesAsync();
                 }
 
-                if(dbContext.ProjectManagers.Any() == false)
+                if (dbContext.ProjectManagers.Any() == false)
                 {
                     InsertProjectManagers(dbContext);
                     await dbContext.SaveChangesAsync();
                 }
-                else
+
+                if (dbContext.Assignments.Any() == false)
                 {
-                    Console.WriteLine("Not empty");
+                    InsertAssignments(dbContext);
+                    await dbContext.SaveChangesAsync();
                 }
-                
             }
         }
+
 
         private static void InsertProjects(AppDbContext dbContext)
         {
@@ -38,18 +41,18 @@ namespace ProjectsAndNotesAPI.Data
             {
                 new Project
     {
-                    Name = "Проект 1",
-                    Description = "Описание проекта 1",
+                    Name = "Project1",
+                    Description = "Project1 description",
                     Status = ProjectState.InProgress,
                     StartDate = DateTime.Now,
                     EndDate = DateTime.Now.AddMonths(3),
                     ProjectManagerId = 1,
+                    Assignments = new List<Assignment>(),
                 },
-
                 new Project
                 {
-                    Name = "Проект 2",
-                    Description = "Описание проекта 2",
+                    Name = "Project2",
+                    Description = "Project2 description",
                     Status = ProjectState.Canceled,
                     StartDate = DateTime.Now.AddMonths(-1),
                     EndDate = DateTime.Now.AddMonths(2),
@@ -58,8 +61,8 @@ namespace ProjectsAndNotesAPI.Data
 
                 new Project
                 {
-                    Name = "Проект 3",
-                    Description = "Описание проекта 3",
+                    Name = "Project3",
+                    Description = "Project3 description",
                     Status = ProjectState.InProgress,
                     StartDate = DateTime.Now,
                     EndDate = DateTime.Now.AddMonths(6),
@@ -68,8 +71,8 @@ namespace ProjectsAndNotesAPI.Data
 
                 new Project
                 {
-                    Name = "Проект 4",
-                    Description = "Описание проекта 4",
+                    Name = "Project4",
+                    Description = "Project4 description",
                     Status = ProjectState.Pending,
                     StartDate = DateTime.Now.AddMonths(1),
                     EndDate = DateTime.Now.AddMonths(4),
@@ -78,8 +81,8 @@ namespace ProjectsAndNotesAPI.Data
 
                 new Project
                 {
-                    Name = "Проект 5",
-                    Description = "Описание проекта 5",
+                    Name = "Project5",
+                    Description = "Project5 description",
                     Status = ProjectState.Pending,
                     StartDate = DateTime.Now.AddMonths(2),
                     EndDate = DateTime.Now.AddMonths(3),
@@ -88,15 +91,15 @@ namespace ProjectsAndNotesAPI.Data
 
                 new Project
                 {
-                    Name = "Проект 6",
-                    Description = "Описание проекта 6",
+                    Name = "Project6",
+                    Description = "Project6 description",
                     Status = ProjectState.Canceled,
                     StartDate = DateTime.Now.AddMonths(1),
                     EndDate = DateTime.Now.AddMonths(5)
                 },
             });
         }
-        
+
         private static void InsertProjectManagers(AppDbContext dbContext)
         {
             dbContext.ProjectManagers.AddRange(new List<ProjectManager>
@@ -130,6 +133,40 @@ namespace ProjectsAndNotesAPI.Data
                     Name = "Manager5",
                     Email = "Manager5@email.com",
                     ProjectId = 5,
+                },
+            });
+        }
+        private static void InsertAssignments(AppDbContext dbContext)
+        {
+            dbContext.Assignments.AddRange(new List<Assignment>()
+            {
+                new Assignment
+                {
+                    Name = "agnmnt1",
+                    Description = "First assignment of project 1",
+                    Status = AssignmentState.Pending,
+                    ProjectId= 1,
+                },
+                new Assignment
+                {
+                    Name = "agnmnt2",
+                    Description = "Second assignment of project 1",
+                    Status = AssignmentState.InProcess,
+                    ProjectId= 1,
+                },
+                new Assignment
+                {
+                    Name = "agnmnt3",
+                    Description = "Third assignment of project 1",
+                    Status = AssignmentState.InProcess,
+                    ProjectId= 1,
+                },
+                new Assignment 
+                {
+                    Name = "agnmnt1",
+                    Description = "First assignment of project 2",
+                    Status = AssignmentState.Canceled,
+                    ProjectId= 2 ,
                 },
             });
         }
