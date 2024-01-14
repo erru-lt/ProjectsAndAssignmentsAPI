@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ProjectsAndNotesAPI.Data.Identity;
 using ProjectsAndNotesAPI.Models;
 using ProjectsAndNotesAPI.Models.DTO.ProjectManager;
 using ProjectsAndNotesAPI.Repositories.ProjectManagerRepository;
@@ -19,6 +21,8 @@ namespace ProjectsAndNotesAPI.Controllers
             _mapper = mapper;
         }
 
+        [Authorize]
+        [RequiresRole(IdentityData.AdminRole)]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -40,6 +44,7 @@ namespace ProjectsAndNotesAPI.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ProjectManagerDto>>> GetAllProjectManagersAsync()
@@ -49,6 +54,7 @@ namespace ProjectsAndNotesAPI.Controllers
             return Ok(projectManagersDto);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ProjectManagerDto>> GetProjectManagerById(int id)
@@ -58,6 +64,8 @@ namespace ProjectsAndNotesAPI.Controllers
             return Ok(projectManagerDto);
         }
 
+        [Authorize]
+        [RequiresRole(IdentityData.AdminRole)]
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -72,6 +80,8 @@ namespace ProjectsAndNotesAPI.Controllers
             return Ok(projectManager);
         }
 
+        [Authorize]
+        [RequiresRole(IdentityData.AdminRole)]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> DeleteProjectManagerAsync(int id)

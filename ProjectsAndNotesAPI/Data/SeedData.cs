@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using ProjectsAndNotesAPI.Enums;
 using ProjectsAndNotesAPI.Models;
 
@@ -6,6 +7,16 @@ namespace ProjectsAndNotesAPI.Data
 {
     public class SeedData
     {
+        public static async Task EnsureRoles(IServiceProvider serviceProvider, string roleName)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            if(await roleManager.RoleExistsAsync(roleName) == false)
+            {
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+        }
+
         public static async Task SeedAppData(IServiceProvider serviceProvider)
         {
             using (var dbContext = new AppDbContext(serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>()))
@@ -95,7 +106,8 @@ namespace ProjectsAndNotesAPI.Data
                     Description = "Project6 description",
                     Status = ProjectState.Canceled,
                     StartDate = DateTime.Now.AddMonths(1),
-                    EndDate = DateTime.Now.AddMonths(5)
+                    EndDate = DateTime.Now.AddMonths(5),
+                    ProjectManagerId = 2,
                 },
             });
         }

@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ProjectsAndNotesAPI.Models;
 
 namespace ProjectsAndNotesAPI.Data
 {
-    public class AppDbContext : DbContext   
+    public class AppDbContext : IdentityDbContext<IdentityUser>
     {
         public DbSet<Project> Projects { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
@@ -16,6 +18,8 @@ namespace ProjectsAndNotesAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Project>()
                 .HasMany(p => p.Assignments)
                 .WithOne(a => a.Project)
